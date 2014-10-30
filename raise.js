@@ -4,17 +4,20 @@ exec osascript -l JavaScript <<EOF
 
 
 se = Application('System Events')
+console.log(se.processes.length)
+ps = se.processes
 
-// TODO(rjk): add filtering?
+filtered = ps.whose({ name: 'devdraw' })
 
-for (i = 0; i < se.processes.length; i++) {
-	// console.log(i, ': ', se.processes[i].name())
-	if (se.processes[i].name() == 'devdraw') {
-		console.log('found devdraw!!!')
-		se.processes[i].visible = true
-		se.processes[i].frontmost = true
-	}
-}
+
+console.log("filtered is an array: ", filtered.length)
+
+// The result of whose is not a real array.
+Array.prototype.map.call(filtered, function (p) {
+	p.visible = true
+	p.frontmost = true
+})
+
 
 // 1. sizing windows
 // 2. talking 9p? i.e.: can JS talk 9p
